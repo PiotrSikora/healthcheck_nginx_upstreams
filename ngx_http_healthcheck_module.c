@@ -666,8 +666,12 @@ void ngx_http_healthcheck_clear_events(ngx_log_t *log) {
     //  Note: From what I can tell it is safe to ngx_del_timer events
     //  that are not in the event tree
     for (i=0; i<ngx_http_healthchecks_arr->nelts; i++) {
-        ngx_del_timer(&ngx_http_healthchecks[i].health_ev);
-        ngx_del_timer(&ngx_http_healthchecks[i].ownership_ev);
+        if (ngx_http_healthchecks[i].health_ev.timer_set) {
+            ngx_del_timer(&ngx_http_healthchecks[i].health_ev);
+        }
+        if (ngx_http_healthchecks[i].ownership_ev.timer_set) {
+            ngx_del_timer(&ngx_http_healthchecks[i].ownership_ev);
+        }
     }
 }
 
